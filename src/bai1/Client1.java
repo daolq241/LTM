@@ -33,6 +33,10 @@ public class Client1 {
             dos.writeUTF(student.getIP());
             dos.writeInt(student.getGroup());
             
+            //Gui du lieu len server kieu Object
+//            ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
+//            oos.writeObject(student);
+            
             //Nhan object tu server
             ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
             Answer answer = (Answer) ois.readObject();
