@@ -17,56 +17,55 @@ import model.Student;
 public class Client3 {
 
     public static void main(String[] args) {
-        String serverIP = "localhost";
-        int serverPort = 11001;
-        String maSV = "B16DCCN058";
-        String hovaten = "Le Quang Dao";
-        String IP = "127....";
-        int group = 2;
-
         try {
-            Socket client = new Socket(serverIP, serverPort);
-            DataOutputStream dataOut = new DataOutputStream(client.getOutputStream());
-            Student student = new Student(maSV, hovaten, IP, group);
-            dataOut.writeUTF(student.getMaSV());
-            dataOut.writeUTF(student.getHovaten());
-            dataOut.writeInt(student.getGroup());
-
+            Socket client = new Socket("localhost", 11001);
+            DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+            Student s = new Student("B16DCCN058", "Le Quang Dao", "ip", 2);
+            
+            dos.writeUTF(s.getMaSV());
+            dos.writeUTF(s.getHovaten());
+            dos.writeInt(s.getGroup());
+            
             //Nhan code, 2 so; 
-            //Code = 1 => uscln; Code = 2 => bscnn
-            DataInputStream dataIn = new DataInputStream(client.getInputStream());
-            int code = dataIn.readInt();
-            int num1 = dataIn.readInt();
-            int num2 = dataIn.readInt();
+            //Code = 1 => uscln; Code = 2 => bscnn 
+            DataInputStream dis = new DataInputStream(client.getInputStream());
+            dis.readInt(); // -- Phai co dong nay moi nhan dc code int;
+            int code = dis.readInt();
+            int num1 = dis.readInt();
+            int num2 = dis.readInt();
             if (code == 1) {
-                dataOut.writeInt(USCLN(num1, num2));
+                dos.writeInt(USCLN(num1, num2));
             } else if (code == 2) {
-                dataOut.writeInt(BSCNN(num1, num2));
+                dos.writeInt(BSCNN(num1, num2));
             }
+            
             // Nhan so n, nhan n so lien tiep;
-            // 
-            int n = dataIn.readInt();
-
+            dis.readInt();
+            int n = dis.readInt();
             int arr[] = new int[n];
             for (int i = 0; i < n; i++) {
-                arr[i] = dataIn.readInt();
+                arr[i] = dis.readInt();
             }
             if (code == 1) { //Gui day tang dan
                 sxTang(arr);
                 for (int i = 0; i < n; i++) {
-                    dataOut.writeInt(arr[i]);
+                    dos.writeInt(arr[i]);
                 }
             } else if (code == 2) { //Gui day giam dan
                 sxGiam(arr);
                 for (int i = 0; i < n; i++) {
-                    dataOut.writeInt(arr[i]);
+                    dos.writeInt(arr[i]);
                 }
             }
-
-//            ObjectInputStream objIn = new ObjectInputStream(client.getInputStream());
-//            Answer answer = (Answer) objIn.readObject();
-//            System.out.println("Da nhan Obj " + answer.getStudent());
+            
+            // Nhan Object tu server
+            ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
+            Answer answer = (Answer) ois.readObject();
+            System.out.println("Da nhan Object " + answer.getStudent().toString());
+            
         } catch (IOException ex) {
+            Logger.getLogger(Client3.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(Client3.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

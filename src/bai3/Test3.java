@@ -33,7 +33,7 @@ public class Test3 {
     }
 
     public static void main(String[] args) {
-        int arr[] = {1, 4, 4, 5, 9,9, 6, 9};
+        int arr[] = {2,4,6,3,5,7};
         sxGiam(arr);
         for (int i = 0; i < arr.length; i++) {
             System.out.println(arr[i]);

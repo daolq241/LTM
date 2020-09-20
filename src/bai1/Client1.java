@@ -1,5 +1,7 @@
 package bai1;
 
+
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -19,33 +21,22 @@ import model.Student;
  */
 public class Client1 {
     public static void main(String[] args) {
-        String serverIP = "localhost";
-        int serverPort = 11001;
-        String maSV = "B16DCCN058";
-        String hovaten = "Le Quang Dao";
-        String IP = "127....";
-        int group = 2;
-        
         try {
-            Socket client = new Socket(serverIP, serverPort);
+            Socket client = new Socket("localhost", 11001);
             System.out.println("Connected: "+ client);
-            Student student = new Student(maSV, hovaten, IP, group);
-//            Gui du lieu kieu data
-            DataOutputStream dataOut= new DataOutputStream(client.getOutputStream());
-            dataOut.writeUTF(student.getMaSV());
-            dataOut.writeUTF(student.getHovaten());
-            dataOut.writeUTF(student.getIP());
-            dataOut.writeInt(student.getGroup());
-               
-            // Gui du lieu kieu Object
-//            ObjectOutput objOut = new ObjectOutputStream(client.getOutputStream());
-//            objOut.writeObject(student);
+            Student student = new Student("B16DCCN058", "Le Quang Dao", "ip", 2);
             
-            ObjectInputStream objIn = new ObjectInputStream(client.getInputStream());
-            Answer answer = (Answer) objIn.readObject();
-            System.out.println("Da nhan Objcet: " + answer.getStudent());
-                   
+            // Gui du lieu kieu data len server
+            DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+            dos.writeUTF(student.getMaSV());
+            dos.writeUTF(student.getHovaten());
+            dos.writeUTF(student.getIP());
+            dos.writeInt(student.getGroup());
             
+            //Nhan object tu server
+            ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
+            Answer answer = (Answer) ois.readObject();
+            System.out.println("Da nhan Objcet: " + answer.getStudent().toString());
             
         } catch (IOException ex) {
             Logger.getLogger(Client1.class.getName()).log(Level.SEVERE, null, ex);
